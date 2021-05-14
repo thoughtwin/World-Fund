@@ -213,7 +213,7 @@ module.exports.userLogin = (data) => {
             if (userResult === null) {
                 const responseData = {
                     status: 201,
-                    msg: 'Please pass correct Email',
+                    message: 'Invalid username and password ',
                 }
                 resolve(responseData)
 
@@ -243,14 +243,14 @@ module.exports.userLogin = (data) => {
                             'message': "login successful",
                             'success': true,
                             token: token,
-                            // 'data': userResult
+                            'userName': userResult.userName
 
                         }
                         resolve(responseData)
                     } else {
                         const responseData = {
                             status: 201,
-                            message: "password incorrect",
+                            message: "Invalid username and password",
                             'success': false,
                         }
                         resolve(responseData)
@@ -296,8 +296,8 @@ module.exports.passwordForgot = (data) => {
                 var transporter = nodemailer.createTransport({
                     service: 'gmail',
                     auth: {
-                        user: "tapish.thoughtwin@gmail.com",
-                        pass: "Psd@12345#"
+                        user: "worldfunds20@gmail.com",
+                        pass: "Worldfunds@123"
                     }
                 });
 
