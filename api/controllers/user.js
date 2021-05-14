@@ -56,7 +56,7 @@ exports.userSignup = (data) => {
                     // });
                     const responseData = {
                         'status': 200,
-                        'message': "User created successfully",
+                        'message': "User created successfully, Please Login.",
                         'registerStatus': true,
                     }
                     resolve(responseData)
