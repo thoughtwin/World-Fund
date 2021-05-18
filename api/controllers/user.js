@@ -324,7 +324,7 @@ module.exports.passwordForgot = (data) => {
                 const responseData = {
                     status: 201,
                     success: false,
-                    msg: 'EmailId not found',
+                    msg: 'Email Id not found',
                 }
                 resolve(responseData)
             }
