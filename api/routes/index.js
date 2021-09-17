@@ -7,6 +7,7 @@ const { userAuthenticator } = require('../middleware/check-auth');
 //User Routes
 router.post("/Signup", Auth.signUp);
 router.post("/Login", Auth.Login);
+router.put('/transactionProcess/:userId', [userAuthenticator],Auth.updateTransactionId);
 router.get("/ViewUserDetails", Auth.getUserDetails);
 // router.get("/VerifyEmail", Auth.verifyEmail);
 router.post("/ResendEmail", Auth.emailResend);

@@ -62,6 +62,10 @@ const UserSchema = mongoose.Schema({
         type: String,
         default: 'user'
     },
+    transactionId: {
+        type: String,
+        default: ''
+    }
 },
     {
         timestamps: true

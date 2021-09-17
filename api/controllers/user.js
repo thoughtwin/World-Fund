@@ -25,7 +25,7 @@ exports.userSignup = (data) => {
                     image: data.image,
                     userName: data.userName,
                     invitedBy: data.invitedBy,
-                    isVerified: true,
+                    isVerified: false,
                     pinCode: data.pinCode,
                     password: data.password,
                     role: data.role || 'user'
@@ -54,10 +54,24 @@ exports.userSignup = (data) => {
 
                     //     }
                     // });
+                    const token = jwt.sign({
+                        _id: result._id,
+                        email: result.email,
+                        username: result.username,
+                        role: result.role,
+                        transactionId:result.transactionId,
+                        isVerified: result.isVerified
+                    },
+                        'secret', {
+                        expiresIn: "365d"
+                    }
+                    );
                     const responseData = {
                         'status': 200,
                         'message': "User created successfully, Please Login.",
+                         token:token,
                         'registerStatus': true,
+                        'userName': result.userName
                     }
                     resolve(responseData)
 
@@ -107,6 +121,35 @@ exports.userSignup = (data) => {
         }).catch((err) => { console.log("err", err); reject("Something is wrong") })
     });
 }
+
+exports.userUpdateTransactionId = (userId, data) => {
+    return new Promise((resolve, reject) => {
+        User.findOneAndUpdate({
+            _id: userId
+        }, {
+            '$set': data
+        }, {
+            'new': true
+        }).then((result) => {
+            if (result == null) {
+                const responseData = {
+                    status: 400,
+                    'success': false,
+                    'message': 'userId not found.',
+                }
+                resolve(responseData)
+            } else {
+                const responseData = {
+                    status: 200,
+                    'success': true,
+                    'message': 'Please, Wait till Verification.',
+                    'data': result,
+                }
+                resolve(responseData)
+            }
+        }).catch((error) => reject(error + ' Fail to update Transaction Id'));
+    });
+};
 
 
 // exports.emailVerify = (data) => {
@@ -206,9 +249,7 @@ exports.resendEmailVerify = (data) => {
 module.exports.userLogin = (data) => {
     return new Promise((resolve, reject) => {
         User.findOne({
-            email: data.email,
-            isVerified: true,
-            isDeleted: false
+            email: data.email
         }).then((userResult) => {
             if (userResult === null) {
                 const responseData = {
@@ -233,6 +274,8 @@ module.exports.userLogin = (data) => {
                             email: userResult.email,
                             username: userResult.username,
                             role: userResult.role,
+                            transactionId:userResult.transactionId,
+                            isVerified:userResult.isVerified,
                         },
                             'secret', {
                             expiresIn: "365d"
@@ -452,5 +495,59 @@ module.exports.passwordChange = (userId, data) => {
             }
         }).catch((error) => reject('Something is wrong'))
 
+    });
+};
+
+module.exports.allUsers = () => {
+    return new Promise((resolve, reject) => {
+        User.find({
+            $and:[{role: "user"},{"transactionId": { $ne : "" }}]
+        }).then((result) => {
+            if (result == null) {
+                const responseData = {
+                    status: 201,
+                    'success': false,
+                    'message': 'userId not found.',
+                }
+                resolve(responseData)
+            } else {
+                const responseData = {
+                    status: 200,
+                    'success': true,
+                    'message': 'All Users with transcation ID',
+                    'data': result,
+                }
+                resolve(responseData)
+            }
+        }).catch((error) => reject(error + 'something is wrong'));
+    })
+};
+
+module.exports.updateUserVerified = (userId, data)=>{
+    return new Promise((resolve, reject) => {
+        User.findOneAndUpdate({
+            $and:[{_id: userId}, {"transactionId": { $ne : "" }}]
+        }, {
+            '$set': data
+        }, {
+            'new': true
+        }).then((result) => {
+            if (result == null) {
+                const responseData = {
+                    status: 400,
+                    'success': false,
+                    'message': 'userId not found.',
+                }
+                resolve(responseData)
+            } else {
+                const responseData = {
+                    status: 200,
+                    'success': true,
+                    'message': 'User Update successfully.',
+                    'data': result,
+                }
+                resolve(responseData)
+            }
+        }).catch((error) => reject(error + ' Fail to update'));
     });
 };

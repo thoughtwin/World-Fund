@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 
 const api = require('./api/routes/index');
+const admin = require('./api/routes/admin');
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -61,6 +62,7 @@ app.use((req, res, next) => {
 
 app.get('/', (req, res) => { res.send('World-Funds-API') });
 app.use('/api/', api);
+app.use('/api/admin/', admin);
 app.use((req, res, next) => {
     const error = new Error('Not found');
     error.status = 404;

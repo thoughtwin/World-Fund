@@ -34,6 +34,30 @@ module.exports.signUp = (req, res, next) => {
         catch((err) => next(err));
 }
 
+module.exports.updateTransactionId = (req, res, next) => {
+    //req.body
+    const userId = req.params.userId;
+    let requestedData = req.body;
+    // define the validation schemaconst a = 
+    const schema = Joi.object().keys({
+        transactionId: Joi.string().required().label('transactioId').error(errors => { return { message: "Transactio ID is required." }; })
+    });
+    // validate the request data against the schema
+    const validateResult = Joi.validate(requestedData, schema, (err, value) => {
+        return err;
+    });
+    if (validateResult) {
+        return res.status(400).json({
+            status: 400,
+            message: "Bad Request",
+            detailedMessage: validateResult.details[0].message
+        });
+    }
+    User.userUpdateTransactionId(userId, requestedData).then((result) => res.json(result))
+    .catch((err) => next(err));
+
+}; 
+
 // module.exports.verifyEmail = (req, res, next) => {
 
 //     //@ start validation
@@ -198,4 +222,30 @@ module.exports.changePassword = (req, res, next) => {
     User.passwordChange(userId, requestedData).then((responseData) => res.json(responseData)).
         catch((err) => next(err));
 
+};
+
+module.exports.getAllUsers = (req, res, next) => {
+    User.allUsers().then((result)=> res.json(result)).catch((err)=>next(err));
+};
+
+module.exports.userVerified = (req, res, next) => {
+    //@ start validation
+    const userId = req.params.userId
+    let requestedData = req.body;
+    const schema = Joi.object().keys({
+        isVerified: Joi.boolean().required().label('isVerified').error(errors => { return { message: "isVerified is required." }; })
+    });
+    // validate the request data against the schema
+    const validateResult = Joi.validate(requestedData, schema, (err, value) => {
+        return err;
+    });
+    if (validateResult) {
+        return res.status(400).json({
+            status: 400,
+            message: "Bad Request",
+            detailedMessage: validateResult.details[0].message
+        });
+    }
+
+    User.updateUserVerified(userId, requestedData).then((result)=>res.json(result)).catch((err)=>next(err));
 };
