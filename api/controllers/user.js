@@ -57,7 +57,7 @@ exports.userSignup = (data) => {
                     const token = jwt.sign({
                         _id: result._id,
                         email: result.email,
-                        username: result.username,
+                        userName: result.userName,
                         role: result.role,
                         transactionId:result.transactionId,
                         isVerified: result.isVerified
@@ -272,7 +272,7 @@ module.exports.userLogin = (data) => {
                         const token = jwt.sign({
                             _id: userResult._id,
                             email: userResult.email,
-                            username: userResult.username,
+                            userName: userResult.userName,
                             role: userResult.role,
                             transactionId:userResult.transactionId,
                             isVerified:userResult.isVerified,
